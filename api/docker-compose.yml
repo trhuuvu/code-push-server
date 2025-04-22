@@ -1,0 +1,36 @@
+version: '3.8'
+
+services:
+  codepush-server:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: vutran03699/codepush-server:latest
+    ports:
+      - "3000:3000"
+    environment:
+      - EMULATED=true
+      - SERVER_URL=http://localhost:3000
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - LOGGING=true
+    depends_on:
+      - redis
+      - azurite
+
+  redis:
+    image: redis:alpine
+    ports:
+      - "6379:6379"
+
+  azurite:
+    image: mcr.microsoft.com/azure-storage/azurite
+    ports:
+      - "10000:10000"
+      - "10001:10001"
+      - "10002:10002"
+    volumes:
+      - azurite_data:/data
+
+volumes:
+  azurite_data:
